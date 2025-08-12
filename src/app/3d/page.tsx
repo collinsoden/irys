@@ -222,7 +222,7 @@ export default function Explorer3DPage() {
         <SearchPanel onSearch={setSearch} search={search} />
 
            {/* 3D Portal */}
-              <section className="py-24 mt-8 md:max-w-5xl max-w-full" id="canva">
+              <section className="py-24 mt-8 max-w-full mx-auto" id="canva">
                 <Container className="text-center">
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -234,7 +234,7 @@ export default function Explorer3DPage() {
                     <p className="md:text-md text-sm text-muted-background mb-10 mx-6">
                       Our 3D interface lets you zoom into uploads, follow data trails, and visualize the Irys network like never before.
                     </p>
-                    <div className="aspect-video w-11/12 md:max-w-3xl mx-auto bg-theme/10 rounded-xl border border-theme shadow-md flex items-center justify-center">
+                    <div className="aspect-video max-w-full mx-auto bg-theme/10 rounded-xl border border-theme shadow-md flex items-center justify-center">
                         <IrysCanvas />
                     </div>
                   </motion.div>

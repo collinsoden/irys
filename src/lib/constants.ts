@@ -1,6 +1,6 @@
 export const SITE_CONFIG = {
-  name: "irys-3d",
-  description: "3d Explorer for Iryz",
+  name: "Iryz 3D Explorer",
+  description: "3D Explorer for Iryz",
   url: "https://iryz-3d.vercel.app",
   ogImage: "https://iryz.xyz/logo.png",
   links: {
