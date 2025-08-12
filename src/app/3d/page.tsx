@@ -1,4 +1,5 @@
 "use client"
+// eslint-disable-
 
 import { motion } from "framer-motion"
 import { Canvas } from "@react-three/fiber";
@@ -11,17 +12,22 @@ import { Layout } from "@/components/layout"
 import Link from "next/link";
 import SearchPanel from "@/components/layout/Search";
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 // Get data from upload endpoint
 async function fetchData() {
 // Get last 7 days to now
   const from = Math.floor(Date.now() / 1000) - (24 * 7) * 60 * 60;
   const to = Math.floor(Date.now() / 1000);
-
-  const response = await fetch(`${baseUrl}/api/upload?from=${from}&to=${to}`);
-  const data = await response.json();
-  return data;
+      try {
+      const res = await fetch(`${baseUrl}/api/upload?from=${from}&to=${to}`, { cache: "no-store" });
+      if (!res.ok) throw new Error("API error");
+      const data = await res.json();
+      return data;
+    } catch (err) {
+      console.error("Failed to fetch:", err);
+      return null;
+    }
 }
 
 // Generate positions for data items
@@ -76,12 +82,10 @@ const sampleData = [
 ];
 
 const fetchedData = await fetchData();
-// Log only tags
-console.log("Fetched data tags:", fetchedData?.transactions?.edges.map((edge: any) => edge.node.tags));
 // Set positions and timestamp to localtime for readability
 const fetched = fetchedData?.transactions?.edges || sampleData;
 const positions = generateSpherePositions(fetched.length, 12);
-const irysData = fetched.map((item: any, idx: any) => ({
+const irysData = fetched.map((item: { node: { id: string, address: string, size: number, timestamp: number, tags: Array<{ name: string, value: string }> } }, idx: number) => ({
   ...item,
   node: {
     ...item.node,
@@ -89,7 +93,7 @@ const irysData = fetched.map((item: any, idx: any) => ({
   }
 }));
 
-function DataNode({ position = [0, 0, 0], info }: { position?: [number, number, number] | any, info: {
+function DataNode({ position = [0, 0, 0], info }: { position?: [number, number, number], info: {
   id: string,
   address: string,
   tags: [{ name: string, value: string }],
@@ -204,10 +208,10 @@ export default function Explorer3DPage() {
 
   return (
     <Layout>
-      <div className="p-8 space-y-10 bg-theme-black px-12 text-center align-middle justify-center">
+      <div className="py-8 space-y-10 bg-theme-black md:px-12 px-4 text-center align-middle justify-center">
         <div className="max-w-5xl mx-auto">
-          <h1 className="text-4xl font-bold mb-2 text-theme">Iryz Explorer 3D</h1>
-          <p className="text-lg text-muted-foreground">
+          <h1 className="md:text-3xl text-lg font-bold mb-2 text-theme">Iryz Explorer 3D</h1>
+          <p className="md:text-lg text-md text-muted-foreground mx-3">
             Explore Irys-powered uploads and transactions in an immersive 3D environment.
             Learn by doing, seeing, and interacting with real Irys data.
             <br />
@@ -216,10 +220,10 @@ export default function Explorer3DPage() {
         </div>
 
         {/* Search Panel */}
-        <SearchPanel onSearch={setSearch} />
+        <SearchPanel onSearch={setSearch} search={search} />
 
            {/* 3D Portal */}
-              <section className="py-24 mt-8">
+              <section className="py-24 mt-8 md:max-w-5xl max-w-full" id="canva">
                 <Container className="text-center">
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -227,11 +231,11 @@ export default function Explorer3DPage() {
                     transition={{ duration: 1 }}
                     viewport={{ once: true }}
                   >
-                    <h2 className="text-3xl font-bold text-theme mb-4">Step Into the Data Metaverse</h2>
-                    <p className="text-gray-300 max-w-2xl mx-auto mb-10">
+                    <h2 className="md:text-3xl text-lg font-bold text-theme mb-4"> Step Into the Data Metaverse </h2>
+                    <p className="md:text-md text-sm text-muted-background mb-10 mx-6">
                       Our 3D interface lets you zoom into uploads, follow data trails, and visualize the Irys network like never before.
                     </p>
-                    <div className="aspect-video w-full max-w-5xl mx-auto bg-theme/10 rounded-xl border border-theme shadow-md flex items-center justify-center">
+                    <div className="aspect-video w-11/12 md:max-w-3xl mx-auto bg-theme/10 rounded-xl border border-theme shadow-md flex items-center justify-center">
                         <IrysCanvas />
                     </div>
                   </motion.div>
@@ -239,43 +243,67 @@ export default function Explorer3DPage() {
               </section>
 
         {/* Activity Feed */}
-        <div className="max-w-7xl mx-auto space-y-4 mt-8">
-          <h2 className="text-2xl font-semibold text-theme">🔄 Live Upload Feed</h2>
-            <table className="bg-background border rounded-md divide-y min-w-full text-left">
-              <thead>
-              <tr className="bg-muted text-theme">
-                <th className="px-4 py-2">Wallet</th>
-                <th className="px-4 py-2">Tags</th>
-                <th className="px-4 py-2">Size</th>
-                <th className="px-4 py-2">Time Uploaded</th>
-              </tr>
-              </thead>
-              <tbody>
-                {irysData.map((data: any) => (
-                    <tr key={data.node.id} className="hover:bg-muted transition-colors">
-                      <td className="px-4 py-2">
-                        <Link href={`/explore/${data.node.id}`} className="hover:bg-muted transition-colors cursor-pointer">
-                          {data.node.address}
-                        </Link>
-                      </td>
-                      <td className="px-4 py-2"> {data.node.tags.map((tag: any, idx: number) => (
-                          <span key={idx + "_" + data.node.id} className="inline-block bg-muted text-theme rounded-full px-2 py-1 text-xs font-semibold mr-2">
-                            {tag.value} {idx < data.node.tags.length - 1 && ","}
-                          </span>
-                        ))} </td>
-                      <td className="px-4 py-2"> {(data.node.size / 1024).toFixed(2)} mb </td>
-                      <td className="px-4 py-2">
-                        <Link href={`/explore/${data.node.id}`} className="hover:bg-muted transition-colors cursor-pointer">
-                        {data.node.timestamp instanceof Date
-                        ? data.node.timestamp.toLocaleString()
-                        : new Date(data.node.timestamp).toLocaleString()}
-                        </Link>
-                      </td>
-                    </tr>
-                ))}
-              </tbody>
-            </table>
-        </div>
+      <div className="md:max-w-4xl w-full md:mx-auto space-y-4 mt-8">
+  <h2 className="md:text-2xl text-lg font-semibold text-theme">
+    Live Upload Feed
+  </h2>
+
+  {/* Table wrapper for horizontal scroll on small screens */}
+  <div className="overflow-x-auto rounded-md border">
+    <table className="w-full bg-background divide-y text-left text-sm md:text-base md:min-w-[600px]">
+      <thead>
+        <tr className="bg-muted text-theme">
+          <th className="md:px-4 p-2 py-2">Wallet</th>
+          <th className="md:px-4 p-2 py-2">Tags</th>
+          <th className="md:px-4 p-2 py-2">Size</th>
+          <th className="md:px-4 p-2 py-2">Time Uploaded</th>
+        </tr>
+      </thead>
+      <tbody>
+        {irysData.map((data: any) => (
+          <tr
+            key={data.node.id}
+            className="hover:bg-muted transition-colors"
+          >
+            <td className="px-4 py-2 truncate max-w-[150px]">
+              <Link
+                href={`/explore/${data.node.id}`}
+                className="hover:underline cursor-pointer"
+              >
+                {data.node.address}
+              </Link>
+            </td>
+            <td className="px-4 py-2">
+              {data.node.tags.map((tag: any, idx: number) => (
+                <span
+                  key={idx + "_" + data.node.id}
+                  className="inline-block bg-muted text-theme rounded-full px-2 py-1 text-xs font-semibold mr-2 whitespace-nowrap"
+                >
+                  {tag.value}
+                  {idx < data.node.tags.length - 1 && ","}
+                </span>
+              ))}
+            </td>
+            <td className="px-4 py-2 whitespace-nowrap">
+              {(data.node.size / 1024).toFixed(2)} mb
+            </td>
+            <td className="px-4 py-2 whitespace-nowrap">
+              <Link
+                href={`/explore/${data.node.id}`}
+                className="hover:underline cursor-pointer"
+              >
+                {data.node.timestamp instanceof Date
+                  ? data.node.timestamp.toLocaleString()
+                  : new Date(data.node.timestamp).toLocaleString()}
+              </Link>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
+
 
         {/* Try Irys Section */}
         <div className="max-w-5xl mx-auto">

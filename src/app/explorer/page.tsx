@@ -2,8 +2,7 @@
 
 import { motion } from "framer-motion"
 import { Layout } from "@/components/layout"
-import { Button, Container } from "@/components/ui"
-import { useRef, useState } from "react"
+import { Container } from "@/components/ui"
 
 export default function Explorer() {
   return (

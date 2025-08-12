@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
 import { Uploader } from "@irys/upload"
 import { Ethereum } from "@irys/upload-ethereum"
-
+import { TransactionNode } from "@/types/requests"
 const queryUrl = "https://uploader.irys.xyz/graphql";
 
 export async function POST(req: NextRequest) {
   const { data, fileType, fileName, fileSize, owner = "Anonymous" } = await req.json();
 
-  // const irysUploader = await Uploader(Ethereum).withWallet(process.env.PRIVATE_KEY);
+  const irysUploader = await Uploader(Ethereum).withWallet(process.env.PRIVATE_KEY);
   const buffer = new Blob([data], { type: fileType });
 
   console.log("Uploading file:", { fileName, fileType, fileSize, data: buffer, owner });
@@ -18,10 +18,10 @@ export async function POST(req: NextRequest) {
     { name: "File-Size", value: fileSize.toString() },
   ]
 
-  // const res = await irysUploader.uploadFile(URL.createObjectURL(buffer), { tags })
-  return NextResponse.json({ error: "Upload functionality is not implemented yet." });
+  const res = await irysUploader.uploadFile(URL.createObjectURL(buffer), { tags })
+  // return NextResponse.json({ error: "Upload functionality is not implemented yet." });
 
-  // return NextResponse.json({ id: res.id, url: `https://gateway.irys.xyz/${res.id}` })
+  return NextResponse.json({ id: res.id, url: `https://gateway.irys.xyz/${res.id}` })
 }
 
 export async function GET(req: NextRequest) {
@@ -68,10 +68,14 @@ export async function GET(req: NextRequest) {
       body: JSON.stringify({ query, variables }),
     });
 
-    const result = await response.json();
-    console.log("GraphQL response:", result.errors ? result.errors.forEach((element: any) => {
-      console.error("GraphQL error:", element);
-    }) : "Success");
+      const result: {
+        data: {
+          transactions: {
+            edges: { node: TransactionNode }[]
+          }
+        }
+      } = await response.json();
+
     return NextResponse.json(result.data);
   }
 

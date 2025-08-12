@@ -2,14 +2,14 @@
 
 import Link from "next/link"
 import { Twitter, Instagram, Facebook, Youtube } from "lucide-react"
-import { mainNavigation, socialLinks } from "@/lib/navigation"
+// import { mainNavigation, socialLinks } from "@/lib/navigation"
 // import {   Connection, PublicKey, SystemProgram, Transaction, LAMPORTS_PER_SOL} from "@solana/web3.js"
 // import { Button } from "../ui"
 
-const footerNavigation = {
-  main: mainNavigation.filter(item => !item.children),
-  social: socialLinks,
-}
+// const footerNavigation = {
+//   main: mainNavigation.filter(item => !item.children),
+//   social: socialLinks,
+// }
 
 const contactInfo = [
   {
@@ -85,7 +85,7 @@ export function Footer() {
             await provider.connect()
             // You would use @solana/web3.js here in a real app
             alert(`Prepare Solana tx to ${recipients.SOL} for ${amount} SOL`)
-            
+
             const connection = new Connection("https://api.mainnet-beta.solana.com")
             const recipientPubkey = new PublicKey(recipients.SOL)
             const sender = provider.publicKey
@@ -130,7 +130,7 @@ export function Footer() {
                 // Handle error appropriately
                 if (err instanceof Error) {
                   alert(`Transaction failed: ${err.message}`)
-                } else {  
+                } else {
                   alert("Transaction failed or cancelled.")
                 }
               }
@@ -182,10 +182,10 @@ export function Footer() {
         {/* Footer Bottom */}
         <div className="mt-6 border-t border-gray-800 pt-4">
           <p className="text-sm text-theme">
-            © {new Date().getFullYear()} IrysExplorer 3D. Built by 
+            © {new Date().getFullYear()} IrysExplorer 3D. Built by
             <Link href="https://x.com/intent/user?screen_name=__serverless" target="_blank" className="text-theme-red px-1 text-md">
              Serverless
-            </Link> 
+            </Link>
             with ❤️ for the Irys ecosystem.
           </p>
         </div>

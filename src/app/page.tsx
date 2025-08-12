@@ -26,7 +26,7 @@ export default function Home() {
               Discover, interact with, and build on the Irys datachain like never before — with a 3D-first experience that brings data to life.
             </p>
             <div className="mt-8 flex justify-center">
-              <Link href="/explorer">
+              <Link href="/3d#canva">
                 <Button className="bg-theme text-white hover:bg-theme-red/90 transition md:w-80 w-auto">
                   Explore Now
                 </Button>

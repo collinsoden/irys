@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/Select";
 
-export default function SearchPanel({ onSearch }: any) {
+export default function SearchPanel({ onSearch, search }: { onSearch: (query: any) => void; search: string; }) {
   const [searchType, setSearchType] = useState("address"); // default type
   const [searchValue, setSearchValue] = useState("");
   const [tagName, setTagName] = useState("");
@@ -31,29 +31,28 @@ export default function SearchPanel({ onSearch }: any) {
   };
 
   return (
-    <div className="w-full mx-auto justify-center flex items-center space-x-4">
+    <div className="w-full flex flex-wrap gap-2 justify-center">
       <Select value={searchType} onValueChange={setSearchType}>
-        <SelectTrigger className="w-[150px]">
+        <SelectTrigger>
           <SelectValue placeholder="Search type" />
         </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="address">Address</SelectItem>
-          <SelectItem value="id">ID</SelectItem>
-          <SelectItem value="tag">Tag</SelectItem>
-        </SelectContent>
-      </Select>
-
+            <SelectContent>
+            <SelectItem value="id">ID</SelectItem>
+            <SelectItem value="address">Address</SelectItem>
+            <SelectItem value="tags">Tags</SelectItem>
+            </SelectContent>
+        </Select>
       {/* Dynamic Inputs */}
       {searchType === "tag" ? (
         <div className="flex gap-2">
           <Input
-            className="w-40"
+            className="md:w-40 w-full"
             placeholder="Tag Name"
             value={tagName}
             onChange={(e) => setTagName(e.target.value)}
           />
           <Input
-            className="w-40"
+            className="md:w-40 w-full"
             placeholder="Tag Value"
             value={tagValue}
             onChange={(e) => setTagValue(e.target.value)}
@@ -61,7 +60,7 @@ export default function SearchPanel({ onSearch }: any) {
         </div>
       ) : (
         <Input
-          className="w-90"
+          className="md:w-90 w-full"
           placeholder={`Search by ${searchType}`}
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}

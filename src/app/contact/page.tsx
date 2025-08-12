@@ -3,8 +3,6 @@
 import { motion } from "framer-motion"
 import { Layout } from "@/components/layout/Layout"
 import { Container } from "@/components/ui/Container"
-import { Button } from "@/components/ui/Button"
-import { Play, Calendar, Users, MapPin } from "lucide-react"
 
 export default function Contact() {
   return (

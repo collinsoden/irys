@@ -35,11 +35,11 @@ export default function AboutPage() {
         >
         <h2 className="text-2xl font-semibold mb-4 text-theme">Why Iryz Explorer 3D?</h2>
         <p className="text-base leading-relaxed text-black">
-          Iryz Explorer 3D was created to make decentralized storage easier to understand — not just through code or docs, but through interaction and experience. 
+          Iryz Explorer 3D was created to make decentralized storage easier to understand — not just through code or docs, but through interaction and experience.
           <br /><br />
           While the official Irys explorer focuses on live transactions and analytics, Iryz Explorer 3D helps you explore how Irys works behind the scenes, with practical tools and 3D visualizations.
           <br /><br />
-          Whether you're a developer uploading your first asset, a builder testing real-world use cases, or just curious about how permanent Web3 storage works — this platform gives you a hands-on, visual way to learn and build.
+          Whether you&apos;re a developer uploading your first asset, a builder testing real-world use cases, or just curious about how permanent Web3 storage works — this platform gives you a hands-on, visual way to learn and build.
         </p>
 
         </motion.section>
@@ -62,14 +62,14 @@ export default function AboutPage() {
           <div className="bg-background border p-6 rounded-lg shadow-sm">
             <h3 className="text-xl font-semibold mb-2 text-theme">📦 Try Real Use Cases</h3>
             <p className="text-muted-foreground">
-              Upload images, fetch metadata, and test SDK functions — all within a hands-on interface. It's built to help you apply Irys in real projects.
+              Upload images, fetch metadata, and test SDK functions — all within a hands-on interface. It&apos;s built to help you apply Irys in real projects.
             </p>
           </div>
 
           <div className="bg-background border p-6 rounded-lg shadow-sm">
             <h3 className="text-xl font-semibold mb-2 text-theme">🚀 Built for Developers</h3>
             <p className="text-muted-foreground">
-              See how real integrations work with guided examples, live API tests, and tips for using Irys with frameworks you're already familiar with.
+              See how real integrations work with guided examples, live API tests, and tips for using Irys with frameworks you&apos;re already familiar with.
             </p>
           </div>
 
