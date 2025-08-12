@@ -1,5 +1,4 @@
 "use client"
-// eslint-disable-
 
 import { motion } from "framer-motion"
 import { Canvas } from "@react-three/fiber";

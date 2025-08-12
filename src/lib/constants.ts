@@ -1,18 +1,18 @@
 export const SITE_CONFIG = {
-  name: "procodes",
-  description: "Initialization template for Procodes projects",
-  url: "https://procodes.com",
-  ogImage: "https://procodes.com/og-image.jpg",
+  name: "irys-3d",
+  description: "3d Explorer for Iryz",
+  url: "https://iryz-3d.vercel.app",
+  ogImage: "https://iryz.xyz/logo.png",
   links: {
-    twitter: "https://twitter.com/procodes",
-    instagram: "https://instagram.com/procodes",
-    facebook: "https://facebook.com/procodes",
-    youtube: "https://youtube.com/procodes",
+    twitter: "https://twitter.com/__serverless",
+    instagram: "https://instagram.com/iryz_xyz",
+    facebook: "https://facebook.com/iryz_xyz",
+    youtube: "https://youtube.com/iryz_xyz",
   },
   contact: {
-    email: "info@procodes.com",
-    phone: "+234 XXX XXX XXXX",
-    address: "Calabar, CRS, Nigeria",
+    email: "info@iryz.xyz",
+    phone: "+1 XXX XXX XXXX",
+    address: "Remote",
   },
 } as const
 
@@ -29,7 +29,7 @@ export const ANIMATION_DELAYS = {
   normal: 0.2,
   slow: 0.3,
   slower: 0.5,
-} as const 
+} as const
 
 export const learnTopics = [
     {
