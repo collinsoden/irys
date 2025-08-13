@@ -7,7 +7,7 @@ import Link from "next/link"
 
 export default function Home() {
   // Get live stats from Iryz blockchain
-  
+
   const siteStats = [
     {
       title: "⏫ Total Uploads",
@@ -62,22 +62,25 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center"
           >
-            <h2 className="text-3xl font-bold text-theme/90 mb-6">Live Irys Stats</h2>
+            <h2 className="text-3xl font-bold text-theme mb-6">
+              Live Irys Stats
+            </h2>
             <p className="text-gray-600 max-w-2xl mx-auto mb-10">
               Real-time insight into uploads, downloads, and datachain activity.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              <div className="p-6 bg-white shadow-md rounded-xl">
-                <h3 className="text-xl font-semibold text-theme">⏫ Total Uploads</h3>
-                <p className="mt-2 text-2xl font-bold text-gray-900">12.4M</p>
+              <div className="p-6 bg-theme-black shadow-md rounded-xl">
+                <h3 className="text-xl font-semibold text-theme">
+                  ⏫ Total Uploads</h3>
+                <p className="mt-2 text-2xl font-bold text-white">12.4M</p>
               </div>
-              <div className="p-6 bg-white shadow-md rounded-xl">
+              <div className="p-6 bg-theme-black shadow-md rounded-xl">
                 <h3 className="text-xl font-semibold text-theme">📥 Downloads</h3>
-                <p className="mt-2 text-2xl font-bold text-gray-900">8.9M</p>
+                <p className="mt-2 text-2xl font-bold text-white">8.9M</p>
               </div>
-              <div className="p-6 bg-white shadow-md rounded-xl">
+              <div className="p-6 bg-theme-black shadow-md rounded-xl">
                 <h3 className="text-xl font-semibold text-theme">🌐 Nodes Active</h3>
-                <p className="mt-2 text-2xl font-bold text-gray-900">218</p>
+                <p className="mt-2 text-2xl font-bold text-white">218</p>
               </div>
             </div>
           </motion.div>
@@ -93,30 +96,33 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl font-bold text-theme mb-6">Why IrysExplorer 3D?</h2>
-            <p className="text-gray-700 max-w-2xl mx-auto mb-10">
-              We go beyond static data — you explore profiles, simulate uploads, and unlock interactive insights from the Irys datachain.
-            </p>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left text-gray-800">
-              <li className="bg-white p-5 rounded-xl shadow">
-                🎮 <strong>Gamified Data Discovery:</strong> Earn badges and rewards while exploring the network.
-              </li>
-              <li className="bg-white p-5 rounded-xl shadow">
-                🧭 <strong>3D Visual Interface:</strong> Navigate the network visually and intuitively.
-              </li>
-              <li className="bg-white p-5 rounded-xl shadow">
-                👤 <strong>Uploader Profiles:</strong> Track uploader history, behavior, and reputation.
-              </li>
-              <li className="bg-white p-5 rounded-xl shadow">
-                🔧 <strong>Developer Mode:</strong> Decode payloads, simulate uploads, and access raw data.
-              </li>
-              <li className="bg-white p-5 rounded-xl shadow">
-                📂 <strong>Smart Categorization:</strong> Instantly know what can be done with each file.
-              </li>
-              <li className="bg-white p-5 rounded-xl shadow">
-                🧠 <strong>AI Insight (Planned):</strong> Suggest actions for each upload via LLM analysis.
-              </li>
-            </ul>
+           <h2 className="text-3xl font-bold text-theme mb-6">
+            Why Iryz Explorer 3D?
+          </h2>
+          <p className="text-gray-700 max-w-2xl mx-auto mb-10">
+            Iryz Explorer 3D turns learning about Irys into an interactive experience — see the data layer in action, experiment with uploads, and explore how decentralized storage works.
+          </p>
+          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left text-gray-800">
+            <li className="bg-theme-black p-5 rounded-xl shadow text-theme">
+              🧭 <strong>3D Visual Interface:</strong> Navigate Irys data flows and transactions in an intuitive, spatial view.
+            </li>
+            <li className="bg-theme-black p-5 rounded-xl shadow text-theme">
+              📤 <strong>Hands-on Uploads:</strong> Try uploading files, metadata, and JSON to see how permanence works.
+            </li>
+            <li className="bg-theme-black p-5 rounded-xl shadow text-theme">
+              🔍 <strong>Live Data Exploration:</strong> Inspect recent uploads, transaction details, and tags directly.
+            </li>
+            <li className="bg-theme-black p-5 rounded-xl shadow text-theme">
+              🔧 <strong>Developer Tools:</strong> Access raw transaction data, GraphQL queries, and SDK examples.
+            </li>
+            <li className="bg-theme-black p-5 rounded-xl shadow text-theme">
+              📚 <strong>Guided Learning:</strong> Built-in topics explain Irys concepts with real examples and code snippets.
+            </li>
+            <li className="bg-theme-black p-5 rounded-xl shadow text-theme">
+              🌐 <strong>Ecosystem Context:</strong> Understand where Irys fits in Web3 and how to integrate it into projects.
+            </li>
+          </ul>
+
           </motion.div>
         </Container>
       </section>
@@ -135,7 +141,7 @@ export default function Home() {
               Dive into a new era of data transparency, programmability, and visual exploration — powered by Irys.
             </p>
             <Link href="/explore">
-              <Button className="bg-white text-theme hover:bg-white/90 transition">
+              <Button className="bg-theme-black text-theme hover:bg-theme-black/90 transition">
                 Launch Explorer
               </Button>
             </Link>
