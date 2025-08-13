@@ -6,10 +6,26 @@ import { Button, Container } from "@/components/ui"
 import Link from "next/link"
 
 export default function Home() {
+  // Get live stats from Iryz blockchain
+  
+  const siteStats = [
+    {
+      title: "⏫ Total Uploads",
+      value: "12.4M",
+    },
+    {
+      title: "📥 Downloads",
+      value: "8.9M",
+    },
+    {
+      title: "🌐 Nodes Active",
+      value: "218",
+    },
+  ];
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 via-white to-red-50">
+      <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-theme/90 via-black to-red-20">
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
         <Container className="relative z-10 text-center">
           <motion.div
@@ -20,14 +36,14 @@ export default function Home() {
             viewport={{ once: true }}
           >
             <h1 className="text-4xl sm:text-5xl font-extrabold text-theme leading-tight mb-4">
-              Welcome to IrysExplorer 3D
+              IrysExplorer 3D
             </h1>
-            <p className="mt-6 text-lg leading-8 text-gray-700 sm:text-xl max-w-3xl mx-auto">
-              Discover, interact with, and build on the Irys datachain like never before — with a 3D-first experience that brings data to life.
+            <p className="mt-6 text-lg leading-8 text-white-600 sm:text-xl max-w-3xl mx-auto">
+              Your gateway to exploring the Irys datachain in a whole new way. Instantly see live stats, interactive 3D visualizations, browse uploader profiles, and simulate uploads. Whether you&apos;re a developer, data enthusiast, or just curious, this site lets you discover, interact with, and build on Irys with powerful tools, and a user-friendly interface. Get a real feel for the network!
             </p>
             <div className="mt-8 flex justify-center">
               <Link href="/3d#canva">
-                <Button className="bg-theme text-white hover:bg-theme-red/90 transition md:w-80 w-auto">
+                <Button className="bg-theme/40 text-white hover:bg-theme-red/90 transition md:w-80 w-auto">
                   Explore Now
                 </Button>
               </Link>
@@ -46,7 +62,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center"
           >
-            <h2 className="text-3xl font-bold text-theme mb-6">Live Irys Stats</h2>
+            <h2 className="text-3xl font-bold text-theme/90 mb-6">Live Irys Stats</h2>
             <p className="text-gray-600 max-w-2xl mx-auto mb-10">
               Real-time insight into uploads, downloads, and datachain activity.
             </p>

@@ -31,7 +31,7 @@ export default function SearchPanel({ onSearch, search }: { onSearch: (query: an
   };
 
   return (
-    <div className="w-full flex flex-wrap gap-2 justify-center">
+    <div className="w-full flex flex-wrap gap-2 justify-center px-5">
       <Select value={searchType} onValueChange={setSearchType}>
         <SelectTrigger>
           <SelectValue placeholder="Search type" />
@@ -39,7 +39,7 @@ export default function SearchPanel({ onSearch, search }: { onSearch: (query: an
             <SelectContent>
             <SelectItem value="id">ID</SelectItem>
             <SelectItem value="address">Address</SelectItem>
-            <SelectItem value="tags">Tags</SelectItem>
+            <SelectItem value="tag">Tags</SelectItem>
             </SelectContent>
         </Select>
       {/* Dynamic Inputs */}

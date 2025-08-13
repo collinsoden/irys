@@ -10,8 +10,10 @@ import { Card, CardContent, Button, Input, Container } from "@/components/ui";
 import { Layout } from "@/components/layout"
 import Link from "next/link";
 import SearchPanel from "@/components/layout/Search";
+import { info } from "console";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const irysExplorerUrl = process.env.NEXT_PUBLIC_IRYS_EXPLORER_URL || "https://testnet-explorer.irys.xyz";
 
 // Get data from upload endpoint
 async function fetchData() {
@@ -134,7 +136,7 @@ function DataNode({ position = [0, 0, 0], info }: { position?: [number, number, 
     />
     <Html distanceFactor={5} position={position}>
       <Link
-        href={`https://testnet-explorer.irys.xyz/address/${info.address}`}
+        href={`${irysExplorerUrl}/address/${info.address}`}
         target="_blank"
       >
         <div
@@ -207,11 +209,12 @@ export default function Explorer3DPage() {
 
   return (
     <Layout>
-      <div className="py-8 space-y-10 bg-theme-black md:px-12 px-4 text-center align-middle justify-center">
+      <div className="py-8 space-y-10 bg-theme-black text-center align-middle justify-center">
         <div className="max-w-5xl mx-auto">
           <h1 className="md:text-3xl text-lg font-bold mb-2 text-theme">Iryz Explorer 3D</h1>
           <p className="md:text-lg text-md text-muted-foreground mx-3">
-            Explore Irys-powered uploads and transactions in an immersive 3D environment.
+             Our 3D interface lets you zoom into uploads, follow data trails, and visualize the Irys network like never before.
+            <br />
             Learn by doing, seeing, and interacting with real Irys data.
             <br />
             Only data uploaded within the last 7 days is shown here.
@@ -222,34 +225,30 @@ export default function Explorer3DPage() {
         <SearchPanel onSearch={setSearch} search={search} />
 
            {/* 3D Portal */}
-              <section className="py-24 mt-8 max-w-full mx-auto" id="canva">
+              <section className="py-12 mt-8 max-w-full mx-auto" id="canva">
                 <Container className="text-center">
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1.3 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 1 }}
                     viewport={{ once: true }}
                   >
-                    <h2 className="md:text-3xl text-lg font-bold text-theme mb-4"> Step Into the Data Metaverse </h2>
-                    <p className="md:text-md text-sm text-muted-background mb-10 mx-6">
-                      Our 3D interface lets you zoom into uploads, follow data trails, and visualize the Irys network like never before.
-                    </p>
-                    <div className="aspect-video max-w-full mx-auto bg-theme/10 rounded-xl border border-theme shadow-md flex items-center justify-center">
+                    <div className="aspect-video w-full mx-auto bg-theme/10  border border-theme shadow-md flex items-center justify-center h-screen">
                         <IrysCanvas />
                     </div>
                   </motion.div>
                 </Container>
               </section>
 
-        {/* Activity Feed */}
-      <div className="md:max-w-4xl w-full md:mx-auto space-y-4 mt-8">
+  {/* Activity Feed */}
+  <div className="md:max-w-5xl w-full md:mx-auto space-y-4 mt-8">
   <h2 className="md:text-2xl text-lg font-semibold text-theme">
     Live Upload Feed
   </h2>
 
   {/* Table wrapper for horizontal scroll on small screens */}
   <div className="overflow-x-auto rounded-md border">
-    <table className="w-full bg-background divide-y text-left text-sm md:text-base md:min-w-[600px]">
+    <table className="w-full bg-background divide-y text-left text-sm md:text-base">
       <thead>
         <tr className="bg-muted text-theme">
           <th className="md:px-4 p-2 py-2">Wallet</th>
@@ -264,9 +263,9 @@ export default function Explorer3DPage() {
             key={data.node.id}
             className="hover:bg-muted transition-colors"
           >
-            <td className="px-4 py-2 truncate max-w-[150px]">
+            <td className="px-4 py-2 truncate max-w-[150px] text-theme">
               <Link
-                href={`/explore/${data.node.id}`}
+                href={`${irysExplorerUrl}/address/${data.node.address}`}
                 className="hover:underline cursor-pointer"
               >
                 {data.node.address}
@@ -276,7 +275,7 @@ export default function Explorer3DPage() {
               {data.node.tags.map((tag: any, idx: number) => (
                 <span
                   key={idx + "_" + data.node.id}
-                  className="inline-block bg-muted text-theme rounded-full px-2 py-1 text-xs font-semibold mr-2 whitespace-nowrap"
+                  className="inline-block bg-muted text-white rounded-full px-2 py-1 text-xs font-semibold mr-2 whitespace-nowrap"
                 >
                   {tag.value}
                   {idx < data.node.tags.length - 1 && ","}
@@ -305,11 +304,15 @@ export default function Explorer3DPage() {
 
 
         {/* Try Irys Section */}
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-semibold mb-2 text-theme">🧪 Try Irys</h2>
+        <div className="max-w-5xl md:mx-auto">
+          <h2 className="text-2xl font-semibold mb-2 text-theme mx-5">🧪
+            Try Irys
+          </h2>
           <Card>
             <CardContent className="p-6 space-y-4">
-              <p className="text-muted-foreground">Simulate uploading a file to Irys testnet</p>
+              <p className="text-muted-foreground">
+                Simulate uploading a file to Irys testnet
+              </p>
               <Input type="file" />
               <Button>Upload (Test Only)</Button>
             </CardContent>

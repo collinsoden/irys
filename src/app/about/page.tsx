@@ -8,39 +8,21 @@ import Link from "next/link"
 export default function AboutPage() {
   return (
     <Layout>
-      <Container className="py-16 space-y-20">
+      <Container className="py-16 space-y-20 bg-gradient-to-br from-theme/90 text-gray-600 via-black to-red-20">
         {/* Hero Section */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center max-w-4xl mx-auto"
+          className="text-center md:max-w-5xl max-w-full mx-auto"
         >
-          <h1 className="text-4xl font-bold tracking-tight mb-4 text-theme">
+          <h1 className="md:text-4xl text-md font-bold tracking-tight mb-4 text-theme">
             About Iryz Explorer 3D
           </h1>
-          <p className="text-lg text-black">
-            Iryz Explorer 3D is an interactive educational tool built to help developers, creators, and curious minds understand and explore how Irys works — the decentralized, permanent data layer for Web3.
+          <p className="text-lg text-white mb-8">
+            Iryz Explorer 3D is an interactive platform designed to help you understand, explore, and work with Irys - the decentralized, permanent data layer for Web3.
+            Instead of diving straight into documentation, you can see how Irys works in action, experiment with real uploads, and explore live blockchain data visually.
           </p>
-
-        </motion.section>
-
-        {/* Vision Section */}
-        <motion.section
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="bg-muted rounded-xl p-8 shadow-md"
-        >
-        <h2 className="text-2xl font-semibold mb-4 text-theme">Why Iryz Explorer 3D?</h2>
-        <p className="text-base leading-relaxed text-black">
-          Iryz Explorer 3D was created to make decentralized storage easier to understand — not just through code or docs, but through interaction and experience.
-          <br /><br />
-          While the official Irys explorer focuses on live transactions and analytics, Iryz Explorer 3D helps you explore how Irys works behind the scenes, with practical tools and 3D visualizations.
-          <br /><br />
-          Whether you&apos;re a developer uploading your first asset, a builder testing real-world use cases, or just curious about how permanent Web3 storage works — this platform gives you a hands-on, visual way to learn and build.
-        </p>
 
         </motion.section>
 
@@ -53,30 +35,34 @@ export default function AboutPage() {
           className="grid gap-8 sm:grid-cols-2"
         >
           <div className="bg-background border p-6 rounded-lg shadow-sm">
-            <h3 className="text-xl font-semibold mb-2 text-theme">🧠 Learn by Exploring</h3>
-            <p className="text-muted-foreground">
-              Iryz Explorer 3D gives you an intuitive way to understand how Irys works. Instead of reading docs first, interact with visual flows and live data.
+            <h3 className="md:text-3xl text-md font-semibold mb-2 text-theme">🧠
+              Learn by Exploring
+            </h3>
+            <p className="text-white">
+              Navigate through live transaction data, see how files are stored permanently, and get a visual understanding of the Irys network. The explorer brings blockchain concepts to life.
             </p>
           </div>
 
           <div className="bg-background border p-6 rounded-lg shadow-sm">
-            <h3 className="text-xl font-semibold mb-2 text-theme">📦 Try Real Use Cases</h3>
-            <p className="text-muted-foreground">
-              Upload images, fetch metadata, and test SDK functions — all within a hands-on interface. It&apos;s built to help you apply Irys in real projects.
+            <h3 className="md:text-3xl text-md font-semibold mb-2 text-theme">
+              📦  Hands on Uploads
+            </h3>
+             <p className="text-white">
+              Upload images, JSON files, or other assets directly to Irys and watch them appear in the live feed. Perfect for testing, learning, or demonstrating permanent storage in real time.
             </p>
           </div>
 
           <div className="bg-background border p-6 rounded-lg shadow-sm">
-            <h3 className="text-xl font-semibold mb-2 text-theme">🚀 Built for Developers</h3>
-            <p className="text-muted-foreground">
-              See how real integrations work with guided examples, live API tests, and tips for using Irys with frameworks you&apos;re already familiar with.
+            <h3 className="md:text-3xl text-md font-semibold mb-2 text-theme">🚀 Practical Learning</h3>
+            <p className="text-white">
+              Go beyond theory with interactive examples, step-by-step guides, and live API testing. Whether you’re new to Web3 or already building, you’ll learn how to integrate Irys into real projects.
             </p>
           </div>
 
           <div className="bg-background border p-6 rounded-lg shadow-sm">
-            <h3 className="text-xl font-semibold mb-2 text-theme">🌐 Complements the Irys Ecosystem</h3>
-            <p className="text-muted-foreground">
-              While the core explorer tracks data and transactions, Iryz Explorer 3D helps you learn how to use Irys — and experiment with it visually.
+            <h3 className="md:text-3xl text-md font-semibold mb-2 text-theme">🌐 Built for the Irys Ecosystem</h3>
+            <p className="text-white">
+              While the official Irys Explorer focuses on analytics and network activity, Iryz Explorer 3D is all about understanding how to use Irys - from uploading data to exploring transactions and testing integrations.
             </p>
           </div>
 
@@ -90,15 +76,35 @@ export default function AboutPage() {
           transition={{ duration: 0.4 }}
           className="text-center pt-12"
         >
-          <h3 className="text-2xl font-bold mb-4 text-theme">
+          <h3 className="md:text-3xl text-md font-bold mb-4 text-theme">
             Ready to begin your IrysQuest?
           </h3>
-          <p className="text-theme-brown mb-6">
+          <p className="text-white mb-6">
             Head over to the Learn page and start exploring the future of data permanence.
           </p>
           <Link href="/learn">
             <Button size="lg">Start Learning</Button>
           </Link>
+        </motion.section>
+
+          {/* Vision Section */}
+        <motion.section
+          initial={{ opacity: 0, x: -50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center md:max-w-5xl max-w-full mx-auto"
+        >
+        <h2 className="md:text-4xl text-md font-bold tracking-tight mb-4 text-theme mt-8">
+          Why Iryz Explorer 3D?
+        </h2>
+        <p className="text-base leading-relaxed text-white">
+          Iryz Explorer 3D was created to make decentralized storage approachable and interactive.
+          Instead of just reading technical specs, you can see, touch, and test Irys in a way that builds real understanding.
+          <br /><br />
+          Whether you&apos;re experimenting on testnet, exploring transaction data, or integrating uploads into your app, this platform makes learning Irys engaging, visual, and hands-on.
+        </p>
+
         </motion.section>
       </Container>
     </Layout>

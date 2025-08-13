@@ -16,7 +16,7 @@ export default function LearnPage() {
 
   return (
     <Layout>
-      <section className="relative min-h-screen bg-white text-gray-800 py-20">
+      <section className="relative min-h-screen justify-center bg-gradient-to-br from-theme/90 text-gray-600 via-black to-red-20 py-20">
         <Container>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -27,8 +27,8 @@ export default function LearnPage() {
             className="text-center mb-12"
           >
             <h1 className="text-4xl font-bold text-theme mb-4">Learn Irys</h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Interactive guide to mastering Irys — uploading, reading, and building with permanence.
+            <p className="text-lg text-white max-w-2xl mx-auto">
+              Getting to know Irys is easy! Explore our topics to understand how to upload files, fetch data, and use the Irys SDK effectively.
             </p>
           </motion.div>
 
@@ -36,7 +36,7 @@ export default function LearnPage() {
             {learnTopics.map((topic, index) => (
               <motion.div
                 key={index}
-                className="border border-gray-200 rounded-xl shadow-sm p-6 bg-white hover:shadow-md transition-all"
+                className="border border-theme/80 rounded-xl shadow-sm p-6 bg-theme-black hover:shadow-md transition-all"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
@@ -46,10 +46,12 @@ export default function LearnPage() {
                   onClick={() => toggleTopic(index)}
                 >
                   <div className="flex items-center gap-4">
-                    <span className="text-2xl">{topic.icon}</span>
+                    <span className="text-2xl">{index + 1}</span>
                     <div>
-                      <h2 className="text-xl font-semibold text-theme">{topic.title}</h2>
-                      <p className="text-gray-500">{topic.description}</p>
+                      <h2 className="text-xl font-bold text-theme">
+                        {topic.title}
+                      </h2>
+                      <p className="text-theme/70">{topic.description}</p>
                     </div>
                   </div>
                   <ChevronDown
@@ -61,12 +63,21 @@ export default function LearnPage() {
 
                 {activeTopic === index && (
                   <motion.div
-                    className="mt-4 text-gray-700 leading-relaxed"
+                    className="mt-4 text-theme leading-relaxed"
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
                     transition={{ duration: 0.3 }}
                   >
-                    {topic.notes}
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: topic.notes
+                          .replace(/```([\s\S]*?)```/g, (_, code) =>
+                            `<pre class="bg-gray-900 rounded p-4 overflow-x-auto mb-4"><code>
+                            ${code.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>`
+                          )
+                          .replace(/\n/g, "<br/>"),
+                      }}
+                    />
                   </motion.div>
                 )}
               </motion.div>
