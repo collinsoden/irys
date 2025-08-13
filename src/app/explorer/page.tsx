@@ -5,6 +5,7 @@ import { Layout } from "@/components/layout"
 import { Container } from "@/components/ui"
 
 export default function Explorer() {
+  const public_url = process.env.NEXT_PUBLIC_IRYS_EXPLORER_URL
   return (
     <Layout>
       <Container className="py-6">
@@ -21,7 +22,7 @@ export default function Explorer() {
           {/* Load the Irys explorer in a canvas */}
             <div className="bg-background border p-1 shadow-md">
             <iframe
-              src="https://testnet-explorer.irys.xyz/"
+              src={public_url}
               className="w-full h-screen scrollbar-hide lg:overflow-hidden"
               title="Irys Explorer"
               style={{

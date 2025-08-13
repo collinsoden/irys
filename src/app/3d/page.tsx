@@ -5,15 +5,15 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Html, Float, Stars } from "@react-three/drei";
 import { useLoader } from "@react-three/fiber";
 import * as THREE from "three";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, Button, Input, Container } from "@/components/ui";
 import { Layout } from "@/components/layout"
 import Link from "next/link";
 import SearchPanel from "@/components/layout/Search";
-import { info } from "console";
+import { DataNodeType, DataNodeInfoType } from "@/types/requests";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-const irysExplorerUrl = process.env.NEXT_PUBLIC_IRYS_EXPLORER_URL || "https://testnet-explorer.irys.xyz";
+const irysExplorerUrl = process.env.NEXT_PUBLIC_IRYS_EXPLORER_URL;
 
 // Get data from upload endpoint
 async function fetchData() {
@@ -21,7 +21,7 @@ async function fetchData() {
   const from = Math.floor(Date.now() / 1000) - (24 * 7) * 60 * 60;
   const to = Math.floor(Date.now() / 1000);
       try {
-      const res = await fetch(`${baseUrl}/api/upload?from=${from}&to=${to}`, { cache: "no-store" });
+      const res = await fetch(`${baseUrl}/api/irys-vm?from=${from}&to=${to}`, { cache: "no-store" });
       if (!res.ok) throw new Error("API error");
       const data = await res.json();
       return data;
@@ -85,24 +85,25 @@ const sampleData = [
 const fetchedData = await fetchData();
 // Set positions and timestamp to localtime for readability
 const fetched = fetchedData?.transactions?.edges || sampleData;
-const positions = generateSpherePositions(fetched.length, 12);
-const irysData = fetched.map((item: { node: { id: string, address: string, size: number, timestamp: number, tags: Array<{ name: string, value: string }> } }, idx: number) => ({
+// filter tag names uniquely and pass to search field
+const tagNames: string[] = Array.from(
+  new Set(
+    fetched.flatMap((item: { node: { tags: { name: string; }[]; }; }) =>
+      item.node.tags.map((tag: { name: string; }) => String(tag.name))
+    )
+  )
+);
+
+const defaultPositions = generateSpherePositions(fetched.length, 12);
+const defaultData = fetched.map((item: { node: { id: string, address: string, size: number, timestamp: number, tags: Array<{ name: string, value: string }> } }, idx: number) => ({
   ...item,
   node: {
     ...item.node,
-    position: positions[idx]
+    position: defaultPositions[idx]
   }
 }));
 
-function DataNode({ position = [0, 0, 0], info }: { position?: [number, number, number], info: {
-  id: string,
-  address: string,
-  tags: [{ name: string, value: string }],
-  size: number,
-  signature: string,
-  timestamp: Date,
-} }) {
-  // if tags[index].name === "Content-Type" && tags[index].value === "image/png", then use the image as background instead of the sphere
+function DataNode({ position = [0, 0, 0], info }: { position?: [number, number, number], info: DataNodeInfoType }) {
   const contentTypeTag = info.tags.find((tag) => tag.name === "Content-Type");
   const contentType = contentTypeTag?.value || "";
   let imageUrl = null;
@@ -190,13 +191,13 @@ function DataNode({ position = [0, 0, 0], info }: { position?: [number, number, 
   );
 }
 
-function IrysCanvas() {
+function IrysCanvas({ data }: { data: DataNodeType[] }) {
   return (
    <Canvas camera={{ position: [0, 0, 20], fov: 50 }}>
     <ambientLight intensity={0.5} />
     <pointLight position={[10, 10, 10]} />
     <Stars radius={100} depth={50} count={5000} factor={4} fade speed={2} />
-    {irysData.map((d: any) => (
+    {data.map((d: DataNodeType) => (
       <DataNode key={d.node.id} position={d.node.position} info={d.node} />
     ))}
     <OrbitControls enableZoom enablePan enableRotate enableDamping dampingFactor={0.25} />
@@ -205,7 +206,75 @@ function IrysCanvas() {
 }
 
 export default function Explorer3DPage() {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(JSON.parse("{}"));
+  const [irysData, setIrysData] = useState<any[]>(defaultData);
+  const [message, setMessage] = useState<string | null>(null);
+
+  // Handle search by making a request to api/routes endpoint to retrieve data based on searched keyword
+  useEffect(() => {
+    const fetchData = async () => {
+
+      setMessage("Loading data...");
+      if(!search.limit) {
+        setMessage(null);
+        return
+      };
+      setMessage("Searching Irys...");
+      // Parse search input to determine type and build query string
+      let query = "";
+      let limit = 100;
+      const from = Math.floor(Date.now() / 1000) - (24 * 7) * 60 * 60;
+      const to = Math.floor(Date.now() / 1000);
+
+      if (search.tag) {
+        const { name, value } = search.tag;
+        setMessage(`Searching for Tag: ${value}...`);
+        limit = search?.limit || limit;
+        query = `tag=${encodeURIComponent(name)}&value=${encodeURIComponent(value)}&limit=${limit}&from=${from}&to=${to}`;
+      } else if (search.id) {
+        const { value } = search.id;
+        limit = search.limit || limit;
+        setMessage(`Searching data matching ID: ${value}...`);
+        query = `id=${encodeURIComponent(value)}&limit=${limit}&from=${from}&to=${to}`;
+      } else if (search.address) {
+        const value = search.address;
+        limit = search.limit || limit;
+        setMessage(`Searching data matching Address: ${value}...`);
+        query = `address=${encodeURIComponent(value)}&limit=${limit}&from=${from}&to=${to}`;
+      } else {
+        // Fallback: treat as tag value search
+        setMessage(`Search can only be done with a valid address, ID or tag name`);
+        return;
+      }
+
+    console.log("Query: ", query);
+    const response = await fetch(`/api/irys-vm?${query}`);
+    const responseData = await response.json();
+    // If error, responseData returns null
+    if(!responseData) {
+      setMessage("No data found for the given search criteria.");
+      return;
+    };
+
+    const { edges } = responseData?.transactions;
+    const newPositions = generateSpherePositions(edges.length, 12);
+    const newIrysData = edges?.map((item: { node: { id: string, address: string, size: number, timestamp: number, tags: Array<{
+      name: string, value: string }>
+    } }, idx: number) => ({
+      ...item,
+      node: {
+        ...item.node,
+        position: newPositions[idx]
+      }
+    }));
+    setMessage(`Data refreshed, ${edges.length} records matches your search.`);
+    setIrysData(newIrysData);
+};
+
+  if (search) {
+    fetchData();
+  }
+  }, [search]);
 
   return (
     <Layout>
@@ -222,7 +291,14 @@ export default function Explorer3DPage() {
         </div>
 
         {/* Search Panel */}
-        <SearchPanel onSearch={setSearch} search={search} />
+        <div className="flex flex-col items-center relative">
+          <SearchPanel onSearch={setSearch} props={{ tagNames }} />
+          <div
+            className="relative p-4 text-theme"
+          >
+            {message}
+          </div>
+        </div>
 
            {/* 3D Portal */}
               <section className="py-12 mt-8 max-w-full mx-auto" id="canva">
@@ -234,7 +310,7 @@ export default function Explorer3DPage() {
                     viewport={{ once: true }}
                   >
                     <div className="aspect-video w-full mx-auto bg-theme/10  border border-theme shadow-md flex items-center justify-center h-screen">
-                        <IrysCanvas />
+                        <IrysCanvas data={irysData}/>
                     </div>
                   </motion.div>
                 </Container>

@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/Select";
 
-export default function SearchPanel({ onSearch, search }: { onSearch: (query: any) => void; search: string; }) {
+export default function SearchPanel({ onSearch, props }: { onSearch: (query: any) => void; props: { tagNames: string[] } }) {
   const [searchType, setSearchType] = useState("address"); // default type
   const [searchValue, setSearchValue] = useState("");
   const [tagName, setTagName] = useState("");
@@ -26,7 +26,6 @@ export default function SearchPanel({ onSearch, search }: { onSearch: (query: an
         limit
       };
     }
-
     onSearch(queryPayload); // pass search params back to parent
   };
 
@@ -45,12 +44,18 @@ export default function SearchPanel({ onSearch, search }: { onSearch: (query: an
       {/* Dynamic Inputs */}
       {searchType === "tag" ? (
         <div className="flex gap-2">
-          <Input
-            className="md:w-40 w-full"
-            placeholder="Tag Name"
-            value={tagName}
-            onChange={(e) => setTagName(e.target.value)}
-          />
+          <Select value={tagName} onValueChange={setTagName}>
+            <SelectTrigger>
+              <SelectValue placeholder="Tag Name" />
+            </SelectTrigger>
+            <SelectContent>
+              {props.tagNames?.sort().map((name: string) => (
+          <SelectItem key={name} value={name}>
+            {name}
+          </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Input
             className="md:w-40 w-full"
             placeholder="Tag Value"

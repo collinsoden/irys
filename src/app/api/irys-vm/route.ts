@@ -129,7 +129,7 @@ export async function GET(req: NextRequest) {
           }
         errors?: {
           message: string;
-          extensions: {}
+          extensions: object
         }
         }
       } = await response.json();
@@ -170,7 +170,6 @@ export async function GET(req: NextRequest) {
   }
   return NextResponse.json({ error: "File retrieval functionality is not implemented yet." });
 } catch (error) {
-  console.error("Error occurred while fetching file:", error);
-  return null;
+    console.error("Error occurred while fetching file:", error);
 }
 }
