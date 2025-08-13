@@ -128,7 +128,7 @@ export default function Home() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 bg-theme text-white text-center">
+      <section className="py-20 bg-gradient-to-br from-theme/90 via-black to-red-20 text-white text-center">
         <Container>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
