@@ -7,3 +7,25 @@ export interface TransactionNode {
   address?: string;
   size?: number;
 };
+
+export interface DataNodeType {
+  node: {
+    id: string;
+    address: string;
+    size: number;
+    timestamp: number | Date;
+    position: [number, number, number];
+    tags: Array<{ name: string; value: string }>;
+    signature?: string;
+  };
+}
+
+export interface DataNodeInfoType {
+  id: string;
+  address: string;
+  size: number;
+  timestamp: number | Date;
+  position: [number, number, number];
+  tags: Array<{ name: string; value: string }>;
+  signature?: string;
+};
