@@ -232,7 +232,8 @@ export default function Explorer3DPage() {
         limit = search?.limit || limit;
         query = `tag=${encodeURIComponent(name)}&value=${encodeURIComponent(value)}&limit=${limit}&from=${from}&to=${to}`;
       } else if (search.id) {
-        const { value } = search.id;
+        console.log("Search: ", search);
+        const value = search.id;
         limit = search.limit || limit;
         setMessage(`Searching data matching ID: ${value}...`);
         query = `id=${encodeURIComponent(value)}&limit=${limit}&from=${from}&to=${to}`;

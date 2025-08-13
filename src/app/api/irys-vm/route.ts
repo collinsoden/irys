@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
   if(limit && limit > 1000) limit = 100;
 
   try{
-    if(to && from && !(tag || fileId)) {
+    if (to && from && !(tag || fileId || address)) {
       to = to + "000";
       from = from + "000";
       const query = `query getByTimestamp {
@@ -62,8 +62,8 @@ export async function GET(req: NextRequest) {
 
   if (fileId) {
     const query = `
-      query getById($ids: [String!], $after: String) {
-        transactions(ids: [${fileId}], after: ${limit}) {
+      query getByIds($first: Int!, $ids: [String!]) {
+        transactions(first: $first, ids: $ids) {
           edges {
             node {
               id
@@ -79,25 +79,33 @@ export async function GET(req: NextRequest) {
           }
       }}
     `;
-    const variables = { ids: [fileId] };
+    const variables = { "ids": [fileId], "first": limit };
     const response = await fetch(queryUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query, variables }),
     });
 
-    const result = await response.json();
-    console.log("GraphQL response:", result);
-    console.log(result.data);
-    return NextResponse.json(result);
+    const result: {
+      data: {
+        transactions: {
+          edges: { node: TransactionNode }[]
+        }
+        errors?: {
+          message: string;
+          extensions: object
+        }
+      }
+    } = await response.json();
+    return NextResponse.json(result.data);
   }
 
   if(tag) {
     value = value.replace(/%2F/g, "/");
-    const tags = { "name": tag, "value": value };
+    const tags = { "name": tag, "values": value };
     const query = `
-    query getByTag {
-      transactions(first: ${limit}, tags: [${tags}] ) {
+    query getByTags($tags: [TagFilter!], $first: Int!) {
+      transactions(first: $first, tags: $tags ) {
         edges {
           node {
             id
@@ -114,14 +122,12 @@ export async function GET(req: NextRequest) {
     }
   }
   `;
-    const variables = { tags: [tags], "first": Number(limit), };
-    console.log("Tags: ", variables);
+    const variables = { "tags": [tags], "first": Number(limit) };
    const response = await fetch(queryUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query, variables }),
-    });
-    console.log("Response: ", response);
+   });
       const result: {
         data: {
           transactions: {
@@ -138,8 +144,8 @@ export async function GET(req: NextRequest) {
 
   if(address){
     const query = `
-      query getByOwners {
-        transactions(owners: ["${address}"], first: ${limit}) {
+      query getByOwners($first: Int!, $address: [String!]) {
+        transactions(first: $first, owners: $address) {
           edges {
             node {
               id
@@ -156,17 +162,24 @@ export async function GET(req: NextRequest) {
         }
       }
     `;
-    const variables = { owners: [address] };
+    const variables = { "first": limit, "owners": [address] };
     const response = await fetch(queryUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query, variables }),
     });
-
-    const result = await response.json();
-    console.log("GraphQL response:", result);
-    console.log(result.data);
-    return NextResponse.json(result);
+    const result: {
+      data: {
+        transactions: {
+          edges: { node: TransactionNode }[]
+        }
+        errors?: {
+          message: string;
+          extensions: object
+        }
+      }
+    } = await response.json();
+    return NextResponse.json(result.data);
   }
   return NextResponse.json({ error: "File retrieval functionality is not implemented yet." });
 } catch (error) {
