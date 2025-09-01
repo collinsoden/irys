@@ -45,7 +45,7 @@ export function ReviewForm() {
           className="w-full p-2 rounded border bg-theme/80 text-black"
         />
         <textarea
-          placeholder="Write your review..."
+          placeholder="What do you think about the UI? What other feature would you like to see? All suggestions are welcome!"
           value={review}
           onChange={(e) => setReview(e.target.value)}
           required
