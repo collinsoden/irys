@@ -22,19 +22,23 @@ export default function UploadPage() {
 
   const handleUpload = async () => {
     if (!selectedFile) return
-    setUploading(true) 
-    
+    setUploading(true)
     try {
       const file = selectedFile
+      if(file.size > 100 * 1024){ // 100KB limit
+        alert("File size exceeds 100KB limit, select a smaller file for testing.");
+        setUploading(false)
+        setSelectedFile(null)
+        return
+      }
       const reader = new FileReader()
-      console.log("Selected file:", file, selectedFile);
       reader.onloadend = async () => {
       const base64 = reader.result?.toString().split(",")[1]
       const res = await fetch("/api/upload", {
         method: "POST",
         body: JSON.stringify({
           data: base64,
-          fileType: file.type ?? "application/octet-stream",
+          fileType: file.type || "application/octet-stream",
           fileName: file.name,
           fileSize: file.size,
           owner: userName || "Anonymous",
@@ -44,11 +48,11 @@ export default function UploadPage() {
       },
     })
     const result = await res.json()
-    setUploadUrl(result.id)
+    setUploadUrl(result.url)
   }
-
   reader.readAsDataURL(file)
     } catch (error) {
+      setUploading(false)
       console.error("Upload failed:", error)
     } finally {
       setUploading(false)
@@ -80,7 +84,7 @@ export default function UploadPage() {
             <div className="flex flex-col items-center gap-4">
               <input
                 type="text"
-                placeholder="Enter your display name"
+                placeholder="Enter tag name"
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
                 className="border p-2 rounded-md w-full max-w-xs text-center"
@@ -93,7 +97,16 @@ export default function UploadPage() {
               {selectedFile && (
                 <p className="text-theme font-medium">{selectedFile.name}</p>
               )}
-
+              {selectedFile && selectedFile.type.startsWith("image/") && (
+                      <div className="mt-4 flex justify-center">
+                      <img
+                        src={URL.createObjectURL(selectedFile)}
+                        alt="Thumbnail preview"
+                        className="max-h-32 rounded shadow"
+                        onLoad={e => URL.revokeObjectURL((e.target as HTMLImageElement).src)}
+                      />
+                      </div>
+                    )}
               <Button
                 disabled={!selectedFile || uploading}
                 onClick={handleUpload}

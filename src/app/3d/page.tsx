@@ -106,9 +106,10 @@ const defaultData = fetched.map((item: { node: { id: string, address: string, si
 function DataNode({ position = [0, 0, 0], info }: { position?: [number, number, number], info: DataNodeInfoType }) {
   const contentTypeTag = info.tags.find((tag) => tag.name === "Content-Type");
   const contentType = contentTypeTag?.value || "";
-  let imageUrl = null;
+  const fileType = info.tags.find((tag) => tag.name === "File-Type")?.value || "";
 
-  if (contentType.includes("image/")) {
+  let imageUrl = null;
+  if (contentType.includes("image/") || fileType.includes("image/")) {
     // Priority 1: load image directly
     imageUrl = useLoader(
       THREE.TextureLoader,
@@ -232,7 +233,6 @@ export default function Explorer3DPage() {
         limit = search?.limit || limit;
         query = `tag=${encodeURIComponent(name)}&value=${encodeURIComponent(value)}&limit=${limit}&from=${from}&to=${to}`;
       } else if (search.id) {
-        console.log("Search: ", search);
         const value = search.id;
         limit = search.limit || limit;
         setMessage(`Searching data matching ID: ${value}...`);
@@ -248,7 +248,6 @@ export default function Explorer3DPage() {
         return;
       }
 
-    console.log("Query: ", query);
     const response = await fetch(`/api/irys-vm?${query}`);
     const responseData = await response.json();
     // If error, responseData returns null
@@ -259,7 +258,9 @@ export default function Explorer3DPage() {
 
     const { edges } = responseData?.transactions;
     const newPositions = generateSpherePositions(edges.length, 12);
-    const newIrysData = edges?.map((item: { node: { id: string, address: string, size: number, timestamp: number, tags: Array<{
+    const newIrysData = edges?.map((item: {
+      node: {
+        id: string, address: string, size: number, timestamp: number, tags: Array<{
       name: string, value: string }>
     } }, idx: number) => ({
       ...item,
@@ -276,7 +277,6 @@ export default function Explorer3DPage() {
     fetchData();
   }
   }, [search]);
-
   return (
     <Layout>
       <div className="py-8 space-y-10 bg-theme-black text-center align-middle justify-center">
@@ -349,7 +349,12 @@ export default function Explorer3DPage() {
               </Link>
             </td>
             <td className="px-4 py-2">
-              {data.node.tags.map((tag: any, idx: number) => (
+              {data.node.tags.includes("File-Owner") && (
+                <span className="inline-block bg-muted text-white rounded-full px-2 py-1 text-xs font-semibold mr-2 whitespace-nowrap">
+                  {(data.node.tags.find((tag: any) => tag.name === "File-Owner")?.value)}
+                </span>
+              )}
+              {!data.node.tags.includes("File-Owner") && data.node.tags.map((tag: any, idx: number) => (
                 <span
                   key={idx + "_" + data.node.id}
                   className="inline-block bg-muted text-white rounded-full px-2 py-1 text-xs font-semibold mr-2 whitespace-nowrap"
@@ -390,8 +395,9 @@ export default function Explorer3DPage() {
               <p className="text-muted-foreground">
                 Simulate uploading a file to Irys testnet
               </p>
-              <Input type="file" />
-              <Button>Upload (Test Only)</Button>
+              <Link href="/upload">
+                <Button>Upload (Test Only)</Button>
+              </Link>
             </CardContent>
           </Card>
         </div>

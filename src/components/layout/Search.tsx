@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/Button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/Select";
 
 export default function SearchPanel({ onSearch, props }: { onSearch: (query: any) => void; props: { tagNames: string[] } }) {
+  const defaultAddress = process.env.WALLET_ADDRESS || "";
   const [searchType, setSearchType] = useState("address"); // default type
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState(defaultAddress);
   const [tagName, setTagName] = useState("");
   const [tagValue, setTagValue] = useState("");
   const [limit, setLimit] = useState(100);
@@ -14,7 +15,9 @@ export default function SearchPanel({ onSearch, props }: { onSearch: (query: any
     let queryPayload = {};
 
     if (searchType === "address") {
-      queryPayload = { address: searchValue.trim(), limit };
+      queryPayload = {
+        address: searchValue.trim(), limit
+      };
     } else if (searchType === "id") {
       queryPayload = { id: searchValue.trim(), limit };
     } else if (searchType === "tag") {
@@ -49,11 +52,12 @@ export default function SearchPanel({ onSearch, props }: { onSearch: (query: any
               <SelectValue placeholder="Tag Name" />
             </SelectTrigger>
             <SelectContent>
-              {props.tagNames?.sort().map((name: string) => (
-          <SelectItem key={name} value={name}>
-            {name}
-          </SelectItem>
-              ))}
+            <SelectItem value="File-Owner">Enter Upload Name</SelectItem>
+            {props.tagNames?.sort().map((name: string) => (
+              <SelectItem key={name} value={name}>
+                {name}
+              </SelectItem>
+            ))}
             </SelectContent>
           </Select>
           <Input

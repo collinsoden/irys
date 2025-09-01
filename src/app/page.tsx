@@ -4,24 +4,25 @@ import { motion } from "framer-motion"
 import { Layout } from "@/components/layout"
 import { Button, Container } from "@/components/ui"
 import Link from "next/link"
+import { useEffect, useState } from "react"
 
 export default function Home() {
-  // Get live stats from Iryz blockchain
+  const [stats, setStats] = useState({
+    transactions: [], totalTx: 0, activeAddresses: 0, totalVolume: 0
+  });
 
-  const siteStats = [
-    {
-      title: "⏫ Total Uploads",
-      value: "12.4M",
-    },
-    {
-      title: "📥 Downloads",
-      value: "8.9M",
-    },
-    {
-      title: "🌐 Nodes Active",
-      value: "218",
-    },
-  ];
+  // Get live stats from Iryz blockchain
+  const fetchStats = async () => {
+    let res = await fetch('/api/stats', { cache: 'no-store' });
+    if (!res.ok) {
+      throw new Error('Failed to fetch stats');
+    }
+    const data = await res.json();
+    setStats(data);
+  }
+  useEffect(() => {
+    fetchStats();
+  }, []);
   return (
     <Layout>
       {/* Hero Section */}
@@ -71,16 +72,26 @@ export default function Home() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
               <div className="p-6 bg-theme-black shadow-md rounded-xl">
                 <h3 className="text-xl font-semibold text-theme">
-                  ⏫ Total Uploads</h3>
-                <p className="mt-2 text-2xl font-bold text-white">12.4M</p>
+                  ⏫ Total Transactions</h3>
+                <p className="mt-2 text-2xl font-bold text-white">
+                  {stats?.totalTx?.toLocaleString() || 0}
+                </p>
               </div>
               <div className="p-6 bg-theme-black shadow-md rounded-xl">
-                <h3 className="text-xl font-semibold text-theme">📥 Downloads</h3>
-                <p className="mt-2 text-2xl font-bold text-white">8.9M</p>
+                <h3 className="text-xl font-semibold text-theme">
+                  <span role="img" aria-label="Volume">📦</span> Total Volume
+                </h3>
+                <p className="mt-2 text-2xl font-bold text-white">
+                  {stats?.totalVolume?.toLocaleString() || 0}
+                </p>
               </div>
               <div className="p-6 bg-theme-black shadow-md rounded-xl">
-                <h3 className="text-xl font-semibold text-theme">🌐 Nodes Active</h3>
-                <p className="mt-2 text-2xl font-bold text-white">218</p>
+                <h3 className="text-xl font-semibold text-theme">
+                  🌐 Active Addresses
+                </h3>
+                <p className="mt-2 text-2xl font-bold text-white">
+                  {stats?.activeAddresses?.toLocaleString() || "0"}
+                </p>
               </div>
             </div>
           </motion.div>
