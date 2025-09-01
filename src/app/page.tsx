@@ -5,6 +5,8 @@ import { Layout } from "@/components/layout"
 import { Button, Container } from "@/components/ui"
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { ReviewForm } from "@/components/reviews/ReviewForm"
+import { ReviewSlider } from "@/components/reviews/ReviewsSlider"
 
 export default function Home() {
   const [stats, setStats] = useState({
@@ -98,6 +100,9 @@ export default function Home() {
         </Container>
       </section>
 
+      {/* Review Section */}
+      <ReviewForm />
+      <ReviewSlider />
       {/* Differences Section */}
       <section className="py-20 bg-gradient-to-tr from-white to-red-50">
         <Container className="text-center">
