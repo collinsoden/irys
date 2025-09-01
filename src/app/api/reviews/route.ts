@@ -1,49 +1,46 @@
+// app/api/reviews/route.ts
+import { createClient } from "redis";
 import { NextResponse } from "next/server";
-import fs from "fs/promises";
-import path from "path";
 
-const filePath = path.join(process.cwd(), "data", "reviews.json");
+let redis: any;
 
-// Ensure the reviews.json file exists
-async function ensureFile() {
-  try {
-    await fs.access(filePath);
-  } catch {
-    await fs.mkdir(path.dirname(filePath), { recursive: true });
-    await fs.writeFile(filePath, JSON.stringify([]));
+async function getRedis() {
+  if (!redis) {
+    redis = createClient({ url: process.env.REDIS_URL });
+    redis.on("error", (err: any) => console.error("Redis Client Error", err));
+    await redis.connect();
   }
+  return redis;
 }
 
+// GET: Fetch all reviews
 export async function GET() {
-  await ensureFile();
-  const data = await fs.readFile(filePath, "utf-8");
-  const reviews = JSON.parse(data);
-
-  // Only return the latest 100 reviews
-  const latest = reviews.slice(-100).reverse();
-  return NextResponse.json(latest);
+  const client = await getRedis();
+  const reviews = await client.lRange("irys-3d-db:reviews", 0, -1);
+  const parsed = reviews.map((r: any) => JSON.parse(r));
+  return NextResponse.json(parsed);
 }
 
+// POST: Add a new review
 export async function POST(req: Request) {
-  const { username, review } = await req.json();
+  const client = await getRedis();
+  const body = await req.json();
 
-  if (!username || !review) {
-    return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+  if (!body.username || !body.review) {
+    return NextResponse.json(
+      { error: "Missing required fields" },
+      { status: 400 }
+    );
   }
-
-  await ensureFile();
-  const data = await fs.readFile(filePath, "utf-8");
-  const reviews = JSON.parse(data);
 
   const newReview = {
-    id: Date.now(),
-    username,
-    review,
+    id: Date.now().toString(),
+    username: body.username,
+    review: body.review,
     createdAt: new Date().toISOString(),
   };
 
-  reviews.push(newReview);
-  await fs.writeFile(filePath, JSON.stringify(reviews, null, 2));
+  await client.rPush("irys-3d-db:reviews", JSON.stringify(newReview));
 
   return NextResponse.json(newReview, { status: 201 });
 }
