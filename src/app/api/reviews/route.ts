@@ -2,45 +2,53 @@
 import { createClient } from "redis";
 import { NextResponse } from "next/server";
 
-let redis: any;
+const redis = await createClient({ url: process.env.REDIS_URL }).connect();
 
-async function getRedis() {
-  if (!redis) {
-    redis = createClient({ url: process.env.REDIS_URL });
-    redis.on("error", (err: any) => console.error("Redis Client Error", err));
-    await redis.connect();
-  }
-  return redis;
-}
-
-// GET: Fetch all reviews
-export async function GET() {
-  const client = await getRedis();
-  const reviews = await client.lRange("irys-3d-db:reviews", 0, -1);
-  const parsed = reviews.map((r: any) => JSON.parse(r));
-  return NextResponse.json(parsed);
-}
-
-// POST: Add a new review
+// Add a new review
 export async function POST(req: Request) {
-  const client = await getRedis();
-  const body = await req.json();
+  const { username, review } = await req.json();
 
-  if (!body.username || !body.review) {
-    return NextResponse.json(
-      { error: "Missing required fields" },
-      { status: 400 }
-    );
+  if (!username || !review) {
+    return NextResponse.json({ error: "Username and review are required" }, { status: 400 });
   }
 
-  const newReview = {
-    id: Date.now().toString(),
-    username: body.username,
-    review: body.review,
-    createdAt: new Date().toISOString(),
-  };
+  const id = `review:${Date.now()}`;
+  await redis.hSet(id, { username, review });
+  await redis.lPush("db:reviews", id);
 
-  await client.rPush("irys-3d-db:reviews", JSON.stringify(newReview));
+  return NextResponse.json({ id, username, review });
+}
 
-  return NextResponse.json(newReview, { status: 201 });
+// Get all reviews
+export async function GET() {
+  const ids = await redis.lRange("db:reviews", 0, -1);
+  const reviews = [];
+
+  for (const id of ids) {
+    const data = await redis.hGetAll(id);
+    if (data && data.username && data.review) {
+      reviews.push({ id, ...data });
+    }
+  }
+
+  return NextResponse.json(reviews);
+}
+
+// Delete a review (admin only)
+export async function DELETE(req: Request) {
+  const { id, password } = await req.json();
+
+  if (!id || !password) {
+    return NextResponse.json({ error: "Review ID and password required" }, { status: 400 });
+  }
+
+  if (password !== process.env.ADMIN_PASSWORD) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+  }
+
+  // Remove review
+  await redis.del(id);
+  await redis.lRem("db:reviews", 0, id);
+
+  return NextResponse.json({ success: true, deletedId: id });
 }
