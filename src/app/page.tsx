@@ -13,7 +13,7 @@ export default function Home() {
 
   // Get live stats from Iryz blockchain
   const fetchStats = async () => {
-    let res = await fetch('/api/stats', { cache: 'no-store' });
+    const res = await fetch('/api/stats', { cache: 'no-store' });
     if (!res.ok) {
       throw new Error('Failed to fetch stats');
     }
